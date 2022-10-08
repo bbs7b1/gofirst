@@ -7,7 +7,9 @@ type ProfileRecord struct {
 
 type Profile []ProfileRecord
 
-func CreateUsers() map[int]Profile {
+var users map[int]Profile
+
+func createUsers() map[int]Profile {
 	profile1 := []ProfileRecord{
 		{GroupId: 1, InterestIds: []int{1, 2}},
 		{GroupId: 2, InterestIds: []int{3}}}
@@ -42,6 +44,10 @@ func GetAllCampaigns() map[int]Profile {
 	return m
 }
 
-func initDB() {
+func FindUser(userId int) Profile {
+	return users[userId]
+}
 
+func Init() {
+	users = createUsers()
 }

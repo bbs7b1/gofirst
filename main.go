@@ -4,35 +4,61 @@ import (
 	"fmt"
 	"gofirst/db"
 	"gofirst/rules"
+	"os"
 	"runtime"
+	"strconv"
 )
 
-func main() {
-	users := db.CreateUsers()
+func printUserCampaigns(userId int) {
+	user := db.FindUser(userId)
+	if user == nil {
+		fmt.Printf("User %d not found\n", userId)
+		return
+	}
 	campaigns := db.GetAllCampaigns()
 
-	ids := rules.GetUserCampaigns(users[1], campaigns, runtime.NumCPU())
+	ids := rules.GetUserCampaigns(user, campaigns, runtime.NumCPU())
 	fmt.Println(ids)
+}
 
-	//	fmt.Println(users)
-	//	fmt.Println(campaigns)
+func syntax() {
+	fmt.Printf("Usage: gofirst -userid id          Print user compaigns\n")
+	fmt.Printf("   or: gofirst -port  port         Start http server\n")
+	fmt.Printf("   or: gofirst -help               This screen\n")
+	fmt.Printf("\n")
+	fmt.Printf("Without arguments start http server on 8080\n")
+	os.Exit(1)
+}
 
-	/*
-		s := []Foo{{a: 1, b: "ONE", r: []int{1, 1}}, {a: 2, b: "TWO", r: []int{2, 2}}}
-
-		s = append(s, Foo{3, "THREE", []int{3, 3}})
-		s[0].changeFoo()
-		for _, el := range s {
-			fmt.Println(el)
+func main() {
+	db.Init()
+	for i := 1; i < len(os.Args); i++ {
+		if os.Args[i] == "-help" {
+			syntax()
+		} else if os.Args[i] == "-port" {
+			if len(os.Args) < i+2 {
+				syntax()
+			}
+			port, err := strconv.Atoi(os.Args[i+1])
+			if err != nil {
+				syntax()
+			}
+			startServer(port)
+			return
+		} else if os.Args[i] == "-userid" {
+			if len(os.Args) < i+2 {
+				syntax()
+			}
+			userId, err := strconv.Atoi(os.Args[i+1])
+			if err != nil {
+				syntax()
+			}
+			printUserCampaigns(userId)
+			return
+		} else {
+			syntax()
 		}
-		fmt.Println(s[0])
-	*/
-	//createRecord(3);
 
-	/*_, err := as.NewClient("nicetomeetyouava.com", 3000)
-	if err != nil {
-		fmt.Println("Failed", err)
-	} else {
-		fmt.Println("Hello, world.")
-	}*/
+	}
+	startServer(8080)
 }
