@@ -22,7 +22,7 @@ func printUserCampaigns(userId int) {
 }
 
 func syntax() {
-	fmt.Printf("Usage: gofirst -userid id          Print user compaigns\n")
+	fmt.Printf("Usage: gofirst -userid id          Print user campaigns\n")
 	fmt.Printf("   or: gofirst -port  port         Start http server\n")
 	fmt.Printf("   or: gofirst -help               This screen\n")
 	fmt.Printf("\n")
