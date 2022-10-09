@@ -24,16 +24,24 @@ func intersects(a []int, b []int) bool {
 func matchProfiles(user db.Profile, campaign db.Profile) bool {
 	gmap := make(map[int]int)
 	imap := make(map[int][]int)
+	// if exist in users set it 1
 	for _, uRec := range user {
 		gmap[uRec.GroupId] = 1
 		imap[uRec.GroupId] = uRec.InterestIds
 	}
+	// if exist in campaigns and in users set it 2
+	// if its only 2, check interestIds
 	for _, cRec := range campaign {
 		gmap[cRec.GroupId] += 1
-		if !intersects(cRec.InterestIds, imap[cRec.GroupId]) {
+		if gmap[cRec.GroupId] == 2 {
+			if !intersects(cRec.InterestIds, imap[cRec.GroupId]) {
+				return false
+			}
+		} else {
 			return false
 		}
 	}
+	// user groups that dont exist in campaigns
 	for _, i := range gmap {
 		if i != 2 {
 			return false
