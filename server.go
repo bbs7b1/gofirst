@@ -15,12 +15,12 @@ func getRoot(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	params := r.URL.Query()
 	if len(params["userid"]) == 0 {
-		w.WriteHeader(http.StatusUnprocessableEntity)
+		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 	userId, err := strconv.Atoi(params["userid"][0])
 	if err != nil {
-		w.WriteHeader(http.StatusUnprocessableEntity)
+		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 	user := db.FindUser(userId)

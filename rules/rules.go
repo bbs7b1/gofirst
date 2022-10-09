@@ -43,7 +43,7 @@ func matchProfiles(user db.Profile, campaign db.Profile) bool {
 }
 
 // share campaigns according maxprocs (CPUs)
-func createSharedMap(campaigns map[int]db.Profile, maxprocs int) [](map[int]db.Profile) {
+func shareCampaignsPerProc(campaigns map[int]db.Profile, maxprocs int) [](map[int]db.Profile) {
 	smap := [](map[int]db.Profile){}
 	for i := 0; i < maxprocs; i++ {
 		smap = append(smap, make(map[int]db.Profile))
@@ -70,12 +70,12 @@ func asyncMatchProfiles(user db.Profile, m map[int]db.Profile, ids *[]int, mu *s
 	}
 }
 
-// return an array of campaigns id that match user profile
+// return an array of campaigns ids that match user profile
 func GetUserCampaigns(user db.Profile, campaigns map[int]db.Profile, maxprocs int) []int {
 	var wg sync.WaitGroup
 	var mu sync.Mutex
 	ids := []int{}
-	smap := createSharedMap(campaigns, maxprocs)
+	smap := shareCampaignsPerProc(campaigns, maxprocs)
 	for _, m := range smap {
 		wg.Add(1)
 		go asyncMatchProfiles(user, m, &ids, &mu, &wg)

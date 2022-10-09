@@ -78,8 +78,8 @@ func createNCampaigns(n int) map[int]db.Profile {
 	return ret
 }
 
-func TestCreateSharedMap(t *testing.T) {
-	smap := createSharedMap(createNCampaigns(10), 1)
+func TestShareCampaignsPerProc(t *testing.T) {
+	smap := shareCampaignsPerProc(createNCampaigns(10), 1)
 	if len(smap) != 1 {
 		t.Fail()
 		t.Log("len(smap) != 1")
@@ -91,7 +91,7 @@ func TestCreateSharedMap(t *testing.T) {
 		}
 	}
 
-	smap = createSharedMap(createNCampaigns(4), 8)
+	smap = shareCampaignsPerProc(createNCampaigns(4), 8)
 	for i := 0; i < len(smap); i++ {
 		if len(smap[i]) > 1 {
 			t.Fail()
@@ -99,7 +99,7 @@ func TestCreateSharedMap(t *testing.T) {
 		}
 	}
 
-	smap = createSharedMap(createNCampaigns(100), 4)
+	smap = shareCampaignsPerProc(createNCampaigns(100), 4)
 	for i := 0; i < len(smap); i++ {
 		if len(smap[i]) != 25 {
 			t.Fail()
@@ -107,7 +107,7 @@ func TestCreateSharedMap(t *testing.T) {
 		}
 	}
 
-	smap = createSharedMap(createNCampaigns(25), 5)
+	smap = shareCampaignsPerProc(createNCampaigns(25), 5)
 	for i := 0; i < len(smap); i++ {
 		if len(smap[i]) != 5 {
 			t.Fail()
@@ -115,7 +115,7 @@ func TestCreateSharedMap(t *testing.T) {
 		}
 	}
 
-	smap = createSharedMap(createNCampaigns(25), 8)
+	smap = shareCampaignsPerProc(createNCampaigns(25), 8)
 	if len(smap[0]) != 4 {
 		t.Fail()
 		t.Log("len[0] != 4")
